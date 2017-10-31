@@ -571,8 +571,13 @@ class Daemon(AuthJSONRPCServer):
             )
             self.startup_status = STARTUP_STAGES[2]
 
+        def _handle_session_setup_error(err):
+            log.warning('Error while setting up session: %s', err.getErrorMessage())
+            reactor.fireSystemEvent("shutdown")
+
         d.addCallback(create_session)
         d.addCallback(lambda _: self.session.setup())
+        d.addErrback(_handle_session_setup_error)
         return d
 
     def _setup_stream_identifier(self):
