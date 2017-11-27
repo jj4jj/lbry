@@ -18,6 +18,11 @@ at anytime.
   * Fixed value error due to a race condition when saving to the claim cache (https://github.com/lbryio/lbry/issues/1013)
   * Fixed being unable to re-download updated content (#951)
   * Fixed sending error messages for failed api requests
+  * Merged two sepereate dht test folders into one
+  * Fixed minor typ0s
+  * Fixed UPnP setup to avoid race conditions
+  * Fixed port sanity check
+  *
 
 ### Deprecated
   * `channel_list_mine`, replaced with `channel_list`
@@ -34,6 +39,8 @@ at anytime.
   * Don't include file names when logging information about streams, only include sd hashes
   * Re-use addresses used for lbrycrd info exchange, this was a significant source of address bloat in the wallet
   * Remove manual saving of the wallet in from lbrynet, let lbryum handle it
+  * Changed `file_list`, `file_delete`, `file_set_status`, and `file_reflect` to no longer return claim related information.
+  * Changed UPnP logic to check for available external port. Use addanyportmapping() now, unless user has specified port in config
 
 ### Added
   * Added `status`, `blobs_completed`, and `blobs_in_stream` fields to file objects returned by `file_list` and `get`
@@ -43,6 +50,9 @@ at anytime.
   * Added user configurable `auto_renew_claim_height_delta` setting, defaults to 0 (off)
   * Added `lbrynet-console`, a tool to run or connect to lbrynet-daemon and launch an interactive python console with the api functions built in.
   * Added a table to the lbry file database to store the outpoint of the claim downloaded from
+  * Added `external_peer_port` field to Session
+  * Added `external_dht_node_port` field to Session
+  * Added method to check if a config value is user specified or not
 
 ### Removed
   * Removed claim related filter arguments `name`, `claim_id`, and `outpoint` from `file_list`, `file_delete`, `file_set_status`, and `file_reflect`
