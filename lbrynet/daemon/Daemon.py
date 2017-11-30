@@ -154,7 +154,10 @@ class AlwaysSend(object):
 # But doesn't seem to impact performance after that.
 @defer.inlineCallbacks
 def calculate_available_blob_size(blob_manager):
-    blob_hashes = yield blob_manager.get_all_verified_blobs()
+    if blob_manager is not None:
+        blob_hashes = yield blob_manager.get_all_verified_blobs()
+    else:
+        blob_hashes = []
     blobs = yield defer.DeferredList([blob_manager.get_blob(b) for b in blob_hashes])
     defer.returnValue(sum(b.length for success, b in blobs if success and b.length))
 
@@ -234,6 +237,9 @@ class Daemon(AuthJSONRPCServer):
                 self.startup_status = STARTUP_STAGES[5]
                 log.info("Started lbrynet-daemon")
                 log.info("%i blobs in manager", len(self.session.blob_manager.blobs))
+
+            if self.session.blob_manager is None:
+                return
 
             yield self.session.blob_manager.get_all_verified_blobs()
             yield _announce()
