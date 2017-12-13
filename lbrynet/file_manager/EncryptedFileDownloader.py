@@ -36,42 +36,38 @@ class ManagedEncryptedFileDownloader(EncryptedFileSaver):
     STATUS_STOPPED = "stopped"
     STATUS_FINISHED = "finished"
 
-    def __init__(self, rowid, stream_hash, peer_finder, rate_limiter,
-                 blob_manager, stream_info_manager, lbry_file_manager,
-                 payment_rate_manager, wallet, download_directory,
-                 file_name=None):
+    def __init__(self, rowid, stream_hash, peer_finder, rate_limiter, blob_manager,
+                 stream_info_manager, lbry_file_manager, payment_rate_manager, wallet,
+                 download_directory, file_name=None, sd_hash=None, key=None, stream_name=None,
+                 suggested_file_name=None):
         EncryptedFileSaver.__init__(self, stream_hash, peer_finder,
                                     rate_limiter, blob_manager,
                                     stream_info_manager,
                                     payment_rate_manager, wallet,
                                     download_directory,
                                     file_name)
-        self.sd_hash = None
         self.rowid = rowid
         self.lbry_file_manager = lbry_file_manager
         self._saving_status = False
+        self.key = key
+        self.stream_name = stream_name
+        self.suggested_file_name = suggested_file_name
+        self.sd_hash = sd_hash
 
     @property
     def saving_status(self):
         return self._saving_status
 
-    @defer.inlineCallbacks
-    def restore(self):
-        yield self.load_file_attributes()
-
-        status = yield self.lbry_file_manager.get_lbry_file_status(self)
-        log_status(self.sd_hash, status)
-
+    def restore(self, status):
         if status == ManagedEncryptedFileDownloader.STATUS_RUNNING:
             # start returns self.finished_deferred
             # which fires when we've finished downloading the file
             # and we don't want to wait for the entire download
             self.start()
         elif status == ManagedEncryptedFileDownloader.STATUS_STOPPED:
-            defer.returnValue(False)
+            pass
         elif status == ManagedEncryptedFileDownloader.STATUS_FINISHED:
             self.completed = True
-            defer.returnValue(True)
         else:
             raise Exception("Unknown status for stream %s: %s" % (self.stream_hash, status))
 

@@ -154,7 +154,7 @@ class FullStreamProgressManager(StreamProgressManager):
             d.addCallback(lambda _: check_if_finished())
 
             def log_error(err):
-                log.warning("Error outputting blob %s: %s",  blobs[current_blob_num].blob_hash,
+                log.warning("Error outputting blob %s: %s", blobs[current_blob_num].blob_hash,
                             err.getErrorMessage())
                 if self.outputting_d is not None and not self.outputting_d.called:
                     self.outputting_d.callback(True)
