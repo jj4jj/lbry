@@ -18,6 +18,7 @@ at anytime.
   * Fixed value error due to a race condition when saving to the claim cache (https://github.com/lbryio/lbry/issues/1013)
   * Fixed being unable to re-download updated content (#951)
   * Fixed sending error messages for failed api requests
+  * Fixed the file manager startup being slow when handling thousands of files
 
 ### Deprecated
   * `channel_list_mine`, replaced with `channel_list`
