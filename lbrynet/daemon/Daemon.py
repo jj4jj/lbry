@@ -513,7 +513,7 @@ class Daemon(AuthJSONRPCServer):
 
     @defer.inlineCallbacks
     def _setup_lbry_file_manager(self):
-        log.info('Starting to setup up file manager')
+        log.info('Starting the file manager')
         self.startup_status = STARTUP_STAGES[3]
         self.stream_info_manager = DBEncryptedFileMetadataManager(self.db_dir)
         self.lbry_file_manager = EncryptedFileManager(
