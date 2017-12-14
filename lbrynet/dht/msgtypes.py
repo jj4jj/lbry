@@ -14,22 +14,26 @@ import constants
 class Message(object):
     """ Base class for messages - all "unknown" messages use this class """
 
-    def __init__(self, rpcID, nodeID):
+    def __init__(self, rpcID, nodeID, nodeIP, nodePort):
         if len(rpcID) != constants.rpc_id_length:
             raise ValueError("invalid rpc id: %i bytes (expected 20)" % len(rpcID))
         if len(nodeID) != constants.key_bits / 8:
             raise ValueError("invalid node id: %i bytes (expected 48)" % len(nodeID))
+        if 1 < nodePort > 65535:
+            raise ValueError("invalid port number: %d" % nodePort)
         self.id = rpcID
         self.nodeID = nodeID
+        self.nodeIP = nodeIP
+        self.nodePort = nodePort
 
 
 class RequestMessage(Message):
     """ Message containing an RPC request """
 
-    def __init__(self, nodeID, method, methodArgs, rpcID=None):
+    def __init__(self, nodeID, nodeIP, nodePort, method, methodArgs, rpcID=None):
         if rpcID is None:
             rpcID = generate_id()[:constants.rpc_id_length]
-        Message.__init__(self, rpcID, nodeID)
+        Message.__init__(self, rpcID, nodeID, nodeIP, nodePort)
         self.request = method
         self.args = methodArgs
 
@@ -37,16 +41,16 @@ class RequestMessage(Message):
 class ResponseMessage(Message):
     """ Message containing the result from a successful RPC request """
 
-    def __init__(self, rpcID, nodeID, response):
-        Message.__init__(self, rpcID, nodeID)
+    def __init__(self, rpcID, nodeID, nodeIP, nodePort, response):
+        Message.__init__(self, rpcID, nodeID, nodeIP, nodePort)
         self.response = response
 
 
 class ErrorMessage(ResponseMessage):
     """ Message containing the error from an unsuccessful RPC request """
 
-    def __init__(self, rpcID, nodeID, exceptionType, errorMessage):
-        ResponseMessage.__init__(self, rpcID, nodeID, errorMessage)
+    def __init__(self, rpcID, nodeID, nodeIP, nodePort, exceptionType, errorMessage):
+        ResponseMessage.__init__(self, rpcID, nodeID, nodeIP, nodePort, errorMessage)
         if isinstance(exceptionType, type):
             self.exceptionType = '%s.%s' % (exceptionType.__module__, exceptionType.__name__)
         else:

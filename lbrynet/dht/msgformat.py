@@ -43,27 +43,36 @@ class MessageTranslator(object):
 class DefaultFormat(MessageTranslator):
     """ The default on-the-wire message format for this library """
     typeRequest, typeResponse, typeError = range(3)
-    headerType, headerMsgID, headerNodeID, headerPayload, headerArgs = range(5)
+    headerType, headerMsgID, headerNodeID, headerNodeIP, headerNodePort = range(5)
+    headerPayload, headerArgs = range(5, 7)
 
     def fromPrimitive(self, msgPrimitive):
         msgType = msgPrimitive[self.headerType]
         if msgType == self.typeRequest:
             msg = msgtypes.RequestMessage(msgPrimitive[self.headerNodeID],
+                                          msgPrimitive[self.headerNodeIP],
+                                          msgPrimitive[self.headerNodePort],
                                           msgPrimitive[self.headerPayload],
                                           msgPrimitive[self.headerArgs],
                                           msgPrimitive[self.headerMsgID])
         elif msgType == self.typeResponse:
             msg = msgtypes.ResponseMessage(msgPrimitive[self.headerMsgID],
                                            msgPrimitive[self.headerNodeID],
+                                           msgPrimitive[self.headerNodeIP],
+                                           msgPrimitive[self.headerNodePort],
                                            msgPrimitive[self.headerPayload])
         elif msgType == self.typeError:
             msg = msgtypes.ErrorMessage(msgPrimitive[self.headerMsgID],
                                         msgPrimitive[self.headerNodeID],
+                                        msgPrimitive[self.headerNodeIP],
+                                        msgPrimitive[self.headerNodePort],
                                         msgPrimitive[self.headerPayload],
                                         msgPrimitive[self.headerArgs])
         else:
             # Unknown message, no payload
-            msg = msgtypes.Message(msgPrimitive[self.headerMsgID], msgPrimitive[self.headerNodeID])
+            msg = msgtypes.Message(msgPrimitive[self.headerMsgID], msgPrimitive[self.headerNodeID],
+                                   msgPrimitive[self.headerNodeIP],
+                                   msgPrimitive[self.headerNodePort])
         return msg
 
     def toPrimitive(self, message):

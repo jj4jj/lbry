@@ -13,36 +13,44 @@ from lbrynet.dht.msgformat import MessageTranslator, DefaultFormat
 class DefaultFormatTranslatorTest(unittest.TestCase):
     """ Test case for the default message translator """
     def setUp(self):
-        self.cases = ((RequestMessage('1' * 48, 'rpcMethod',
+        self.cases = ((RequestMessage('1' * 48, '127.0.0.1', 4444, 'rpcMethod',
                                       {'arg1': 'a string', 'arg2': 123}, '1' * 20),
                        {DefaultFormat.headerType: DefaultFormat.typeRequest,
                         DefaultFormat.headerNodeID: '1' * 48,
+                        DefaultFormat.headerNodeIP: '127.0.0.1',
+                        DefaultFormat.headerNodePort: 4444,
                         DefaultFormat.headerMsgID: '1' * 20,
                         DefaultFormat.headerPayload: 'rpcMethod',
                         DefaultFormat.headerArgs: {'arg1': 'a string', 'arg2': 123}}),
 
-                      (ResponseMessage('2' * 20, '2' * 48, 'response'),
+                      (ResponseMessage('2' * 20, '127.0.0.1', 4444, '2' * 48, 'response'),
                        {DefaultFormat.headerType: DefaultFormat.typeResponse,
                         DefaultFormat.headerNodeID: '2' * 48,
+                        DefaultFormat.headerNodeIP: '127.0.0.1',
+                        DefaultFormat.headerNodePort: 4444,
                         DefaultFormat.headerMsgID: '2' * 20,
                         DefaultFormat.headerPayload: 'response'}),
 
-                      (ErrorMessage('3' * 20, '3' * 48,
+                      (ErrorMessage('3' * 20, '127.0.0.1', 4444, '3' * 48,
                                     "<type 'exceptions.ValueError'>", 'this is a test exception'),
                        {DefaultFormat.headerType: DefaultFormat.typeError,
                         DefaultFormat.headerNodeID: '3' * 48,
+                        DefaultFormat.headerNodeIP: '127.0.0.1',
+                        DefaultFormat.headerNodePort: 4444,
                         DefaultFormat.headerMsgID: '3' * 20,
                         DefaultFormat.headerPayload: "<type 'exceptions.ValueError'>",
                         DefaultFormat.headerArgs: 'this is a test exception'}),
 
                       (ResponseMessage(
-                          '4' * 20, '4' * 48,
+                          '4' * 20, '127.0.0.1', 4444, '4' * 48,
                           [('H\x89\xb0\xf4\xc9\xe6\xc5`H>\xd5\xc2\xc5\xe8Od\xf1\xca\xfa\x82',
                             '127.0.0.1', 1919),
                            ('\xae\x9ey\x93\xdd\xeb\xf1^\xff\xc5\x0f\xf8\xac!\x0e\x03\x9fY@{',
                             '127.0.0.1', 1921)]),
                        {DefaultFormat.headerType: DefaultFormat.typeResponse,
                         DefaultFormat.headerNodeID: '4' * 48,
+                        DefaultFormat.headerNodeIP: '127.0.0.1',
+                        DefaultFormat.headerNodePort: 4444,
                         DefaultFormat.headerMsgID: '4' * 20,
                         DefaultFormat.headerPayload:
                             [('H\x89\xb0\xf4\xc9\xe6\xc5`H>\xd5\xc2\xc5\xe8Od\xf1\xca\xfa\x82',

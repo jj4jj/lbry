@@ -150,7 +150,8 @@ class FakeRPCProtocol(protocol.DatagramProtocol):
             for closeContact in closestContactsList:
                 closestContacts.append((closeContact.id, closeContact.address, closeContact.port))
 
-            message = ResponseMessage(rpc_id, contact.id, closestContacts)
+            message = ResponseMessage(rpc_id, contact.id, contact.address, contact.port,
+                                      closestContacts)
             df = defer.Deferred()
             df.callback((message, (contact.address, contact.port)))
             return df
@@ -177,7 +178,7 @@ class FakeRPCProtocol(protocol.DatagramProtocol):
                             response = closestContacts
 
             # Create the response message
-            message = ResponseMessage(rpc_id, contact.id, response)
+            message = ResponseMessage(rpc_id, contact.id, contact.address, contact.port, response)
             df = defer.Deferred()
             df.callback((message, (contact.address, contact.port)))
             return df
