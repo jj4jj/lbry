@@ -214,7 +214,7 @@ class KademliaProtocol(protocol.DatagramProtocol):
             log.warning("Couldn't decode dht datagram from %s", address)
             return
 
-        remoteContact = Contact(message.nodeID, address[0], address[1], self)
+        remoteContact = Contact(message.nodeID, message.nodeIP, message.nodePort, self)
 
         now = time.time()
         contact_history = self._history_rx.get(address, [])
