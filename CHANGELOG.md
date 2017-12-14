@@ -41,6 +41,7 @@ at anytime.
   * Remove manual saving of the wallet in from lbrynet, let lbryum handle it
   * Changed `file_list`, `file_delete`, `file_set_status`, and `file_reflect` to no longer return claim related information.
   * Changed UPnP logic to check for available external port. Use addanyportmapping() now, unless user has specified port in config
+  * Changed Contact creation logic. Use ip/port advertised in message headers instead of UDP source
 
 ### Added
   * Added `status`, `blobs_completed`, and `blobs_in_stream` fields to file objects returned by `file_list` and `get`
