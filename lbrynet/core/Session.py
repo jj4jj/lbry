@@ -10,6 +10,7 @@ from lbrynet.core.server.DHTHashAnnouncer import DHTHashAnnouncer
 from lbrynet.core.utils import generate_id
 from lbrynet.core.PaymentRateManager import BasePaymentRateManager, NegotiatedPaymentRateManager
 from lbrynet.core.BlobAvailability import BlobAvailabilityTracker
+from lbrynet.core.SinglePeerDownloader import SinglePeerDownloader
 from twisted.internet import threads, defer
 
 log = logging.getLogger(__name__)
@@ -136,6 +137,7 @@ class Session(object):
         self.payment_rate_manager = None
         self.payment_rate_manager_class = payment_rate_manager_class or NegotiatedPaymentRateManager
         self.is_generous = is_generous
+        self.single_peer_downloader = SinglePeerDownloader()
 
     def setup(self):
         """Create the blob directory and database if necessary, start all desired services"""
@@ -318,6 +320,7 @@ class Session(object):
 
         dl = defer.DeferredList([d1, d2], fireOnOneErrback=True, consumeErrors=True)
         dl.addCallback(lambda _: self.blob_tracker.start())
+        dl.addCallback(lambda _: self.single_peer_downloader.setup(self.wallet, self.blob_manager))
         return dl
 
     def _unset_upnp(self):
