@@ -45,14 +45,11 @@ class ManagedEncryptedFileDownloader(EncryptedFileSaver):
                                     stream_info_manager,
                                     payment_rate_manager, wallet,
                                     download_directory,
-                                    file_name)
+                                    file_name, key, stream_name, suggested_file_name)
+        self.sd_hash = sd_hash
         self.rowid = rowid
         self.lbry_file_manager = lbry_file_manager
         self._saving_status = False
-        self.key = key
-        self.stream_name = stream_name
-        self.suggested_file_name = suggested_file_name
-        self.sd_hash = sd_hash
 
     @property
     def saving_status(self):
